@@ -3,6 +3,14 @@ using Microsoft.IdentityModel.Tokens;
 using WembleyScada.Domain.SeedWork;
 using WembleyScada.Infrastructure;
 using WembleyScada.Api.Application.Mapping;
+using WembleyScada.Infrastructure.Communication;
+using Buffer = WembleyScada.Api.Application.Workers.Buffer;
+using WembleyScada.Api.Application.Workers;
+using WembleyScada.Api.Application.Hubs;
+using WembleyScada.Domain.AggregateModels.DeviceAggregate;
+using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
+using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
+using WembleyScada.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +46,8 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+builder.Services.AddSignalR();
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -53,6 +63,18 @@ builder.Services.AddMediatR(cfg =>
         cfg.RegisterServicesFromAssemblyContaining<ApplicationDbContext>();
         cfg.RegisterServicesFromAssemblyContaining<Entity>();
     });
+
+var config = builder.Configuration;
+builder.Services.Configure<MqttOptions>(config.GetSection("MqttOptions"));
+builder.Services.AddSingleton<ManagedMqttClient>();
+builder.Services.AddSingleton<Buffer>();
+
+builder.Services.AddHostedService<ScadaHost>();
+
+builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+builder.Services.AddScoped<IShiftReportRepository, ShiftReportRepository>();
+builder.Services.AddScoped<IMachineStatusRepository, MachineStatusRepository>();
+
 
 var app = builder.Build();
 
@@ -70,5 +92,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

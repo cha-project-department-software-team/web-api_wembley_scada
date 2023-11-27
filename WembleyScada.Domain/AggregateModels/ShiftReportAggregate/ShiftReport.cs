@@ -39,7 +39,7 @@ public class ShiftReport : IAggregateRoot
         Shots = new List<Shot>();
     }
 
-    public ShiftReport(int mouldSlot, Device device, DateTime time)
+    public ShiftReport(Device device, DateTime time)
     {
         var shiftNumber = ShiftTimeHelper.GetShiftNumber(time);
         var date = ShiftTimeHelper.GetShiftDate(time);

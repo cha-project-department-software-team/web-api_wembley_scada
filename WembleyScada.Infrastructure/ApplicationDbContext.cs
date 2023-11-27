@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using WembleyScada.Domain.AggregateModels.DeviceAggregate;
+using WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate;
+using WembleyScada.Domain.AggregateModels.ErrorInformationAggregate;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
+using WembleyScada.Domain.AggregateModels.ProductAggregate;
+using WembleyScada.Domain.AggregateModels.ReferenceAggregate;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Domain.SeedWork;
 using WembleyScada.Infrastructure.EntityConfigurations;
@@ -15,8 +19,12 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     private readonly IMediator _mediator;
 
     public DbSet<Device> Devices { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Reference> References { get; set; }
+    public DbSet<DeviceReference> DeviceReferences { get; set; }
     public DbSet<ShiftReport> ShiftReports { get; set; }
     public DbSet<MachineStatus> MachineStatus { get; set; }
+    public DbSet<ErrorInformation> ErrorInformations { get; set; }
 
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -36,8 +44,12 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new DeviceEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ReferenceEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new DeviceReferenceEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ShiftReportEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new MachineStatusEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ErrorInformationEntityTypeConfiguration());
     }
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
