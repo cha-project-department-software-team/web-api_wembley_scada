@@ -27,5 +27,7 @@ public class ModelToViewModelProfile : Profile
         CreateMap<MFC, MFCViewModel>();
 
         CreateMap<ShiftReport, ShiftReportViewModel>();
+        CreateMap<ShiftReport, ShiftReportDetailViewModel>();
+        CreateMap<Shot, ShotViewModel>();
     }
 }

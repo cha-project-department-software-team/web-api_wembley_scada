@@ -26,4 +26,11 @@ public class ShiftReportsController : ControllerBase
         var file = await _mediator.Send(query);
         return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "OEEreport.xlsx");
     }
+
+    [HttpGet]
+    [Route("shiftReportId")]
+    public async Task<IEnumerable<ShiftReportDetailViewModel>> GetShiftReportDetails([FromQuery]ShiftReportDetailsQuery query)
+    {
+        return await _mediator.Send(query);
+    }
 }

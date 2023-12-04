@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WembleyScada.Infrastructure;
 
@@ -11,9 +12,11 @@ using WembleyScada.Infrastructure;
 namespace WembleyScada.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231201162314_fixShot")]
+    partial class fixShot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,34 +193,6 @@ namespace WembleyScada.Api.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Lot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("LotId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("LotSize")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReferenceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LotId")
-                        .IsUnique();
-
-                    b.HasIndex("ReferenceId");
-
-                    b.ToTable("Lot");
-                });
-
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Reference", b =>
                 {
                     b.Property<int>("Id")
@@ -235,14 +210,11 @@ namespace WembleyScada.Api.Migrations
 
                     b.Property<string>("RefName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("RefName")
-                        .IsUnique();
 
                     b.ToTable("References");
                 });
@@ -352,13 +324,6 @@ namespace WembleyScada.Api.Migrations
                     b.Navigation("Device");
                 });
 
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Lot", b =>
-                {
-                    b.HasOne("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Reference", null)
-                        .WithMany("Lots")
-                        .HasForeignKey("ReferenceId");
-                });
-
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Reference", b =>
                 {
                     b.HasOne("WembleyScada.Domain.AggregateModels.ProductAggregate.Product", "Product")
@@ -431,11 +396,6 @@ namespace WembleyScada.Api.Migrations
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ProductAggregate.Product", b =>
                 {
                     b.Navigation("References");
-                });
-
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Reference", b =>
-                {
-                    b.Navigation("Lots");
                 });
 #pragma warning restore 612, 618
         }

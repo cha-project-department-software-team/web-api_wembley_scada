@@ -11,6 +11,7 @@ using WembleyScada.Domain.AggregateModels.DeviceAggregate;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Infrastructure.Repositories;
+using WembleyScada.Domain.AggregateModels.ReferenceAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,7 @@ builder.Services.AddHostedService<ScadaHost>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IShiftReportRepository, ShiftReportRepository>();
 builder.Services.AddScoped<IMachineStatusRepository, MachineStatusRepository>();
+builder.Services.AddScoped<IReferenceRepository, ReferenceRepository>();
 
 
 var app = builder.Build();

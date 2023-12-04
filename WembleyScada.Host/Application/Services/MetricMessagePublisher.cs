@@ -11,7 +11,7 @@ public class MetricMessagePublisher
     {
         _mqttClient = mqttClient;
     }
-
+    
     public async Task PublishMetricMessage(string deviceType, string deviceId, string metricName, object value, DateTime timestamp)
     {
         var topic = $"{deviceType}/{deviceId}/Metric/{metricName}";

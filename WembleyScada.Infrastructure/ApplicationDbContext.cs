@@ -46,6 +46,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         modelBuilder.ApplyConfiguration(new DeviceEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ReferenceEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new LotEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new DeviceReferenceEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ShiftReportEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new MachineStatusEntityTypeConfiguration());

@@ -1,7 +1,7 @@
-﻿using MediatR;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
 using WembleyScada.Host.Application.Commands;
+using WembleyScada.Host.Application.Commands.HerapinCaps;
 using WembleyScada.Host.Application.Dtos;
 using WembleyScada.Infrastructure.Communication;
 using WembleyScadaThaiDuongScada.Host.Application.Commands;
@@ -61,9 +61,16 @@ public class UpdateShiftReportWorker : BackgroundService
             var messageType = new MessageType(deviceType, metric);
             switch (messageType.Value)
             {
-                case MessageType.EMessageType.MachineStatus:
+                case MessageType.EMessageType.HerapinCapProductCount:
+                    var productCount = Convert.ToInt32(metric.Value);
+                    var herapinCapProductCount = new HerapinCapProductCountNotification(deviceType, deviceId, productCount, metric.Timestamp);
+                    await mediator.Publish(herapinCapProductCount);
+                    break;
+                case MessageType.EMessageType.HerapinCapMachineStatus:
                     var statusCode = (long)metric.Value;
                     var machineStatus = (EMachineStatus)statusCode;
+                    var herapinCapMachineStatus = new HerapinCapMachineStatusChangedNotification(deviceType, deviceId, machineStatus, metric.Timestamp);
+                    await mediator.Publish(herapinCapMachineStatus);
                     break;
                 case MessageType.EMessageType.CycleTime:
                     var cycleTime = (double)metric.Value;

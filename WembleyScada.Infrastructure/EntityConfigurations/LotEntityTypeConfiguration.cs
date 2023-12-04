@@ -3,17 +3,15 @@ using WembleyScada.Domain.AggregateModels.ReferenceAggregate;
 
 namespace WembleyScada.Infrastructure.EntityConfigurations;
 
-public class ReferenceEntityTypeConfiguration : IEntityTypeConfiguration<Reference>
+public class LotEntityTypeConfiguration : IEntityTypeConfiguration<Lot>
 {
-    public void Configure(EntityTypeBuilder<Reference> builder)
+    public void Configure(EntityTypeBuilder<Lot> builder)
     {
-        builder.HasKey(x => x.Id);
+        builder.HasKey(p => p.Id);
         builder.Property(p => p.Id)
             .IsRequired()
             .ValueGeneratedOnAdd();
 
-        builder.HasIndex(x => x.RefName).IsUnique();
-
-        builder.HasMany(p => p.Lots).WithOne();
+        builder.HasIndex(p => p.LotId).IsUnique();
     }
 }

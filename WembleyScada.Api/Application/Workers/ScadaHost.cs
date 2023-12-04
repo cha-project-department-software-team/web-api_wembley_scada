@@ -54,7 +54,7 @@ public class ScadaHost : BackgroundService
         }
         foreach (var metric in metrics)
         {
-            var notification = new TagChangedNotification(deviceId, metric.Name, metric.Value);
+            var notification = new TagChangedNotification(deviceId, metric.Name, metric.Value, metric.Timestamp);
             _buffer.Update(notification);
             string json = JsonConvert.SerializeObject(notification);
             await _hubContext.Clients.All.SendAsync("TagChanged", json);

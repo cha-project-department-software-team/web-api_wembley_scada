@@ -13,19 +13,11 @@ public class ShiftReport : IAggregateRoot
     public int DefectCount { get; set; }
     public double TotalExecutionTime => Shots.Sum(x => x.ExecutionTime);
     public double TotalCycleTime => Shots.Sum(x => x.CycleTime);
-    public TimeSpan ElapsedTime => ShiftTimeHelper.GetShiftElapsedTime(Date, ShiftNumber);
-    public double A
-    {
-        get
-        {
-            double a = Shots.Count > 0 ? TimeSpan.FromSeconds(TotalCycleTime) / ElapsedTime : 0;
-            a = (a > 1) ? 1 : a;
-            return a;
-        }
-    }
-    public double Q => Shots.Count > 0 ? (double)(ProductCount - DefectCount) / (double)ProductCount : 0;
-    public double P => Shots.Count > 0 ? TotalExecutionTime / TotalCycleTime : 0;
-    public double OEE => Shots.Count > 0 ? A * P * Q : 0;
+    public TimeSpan ElapsedTime { get; set; }
+    public double A { get; set; }
+    public double P { get; set; }
+    public double Q => (double)(ProductCount - DefectCount) / (double)ProductCount;
+    public double OEE => A * P * Q;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ShiftReport() { }
@@ -50,11 +42,20 @@ public class ShiftReport : IAggregateRoot
         Shots = new List<Shot>();
     }
 
-    public void AddShot(double executionTime, double cycleTime, DateTime timestamp)
+    public void AddHerapinCapShot(DateTime timestamp, double a, double p, double q, double oEE)
     {
         if (!Shots.Any(x => x.TimeStamp == timestamp))
         {
-            var shot = new Shot(executionTime, cycleTime, timestamp);
+            var shot = new Shot(timestamp, a, p, q, oEE);
+            Shots.Add(shot);
+        }
+    }
+
+    public void AddShot(double executionTime, double cycleTime, DateTime timestamp, double a, double p, double q, double oEE)
+    {
+        if (!Shots.Any(x => x.TimeStamp == timestamp))
+        {
+            var shot = new Shot(executionTime, cycleTime, timestamp, a, p, q, oEE);
             Shots.Add(shot);
         }
     }
@@ -67,5 +68,20 @@ public class ShiftReport : IAggregateRoot
     public void SetDefectCount(int defectCount)
     {
         DefectCount = defectCount;
+    }
+
+    public void SetElapsedTime(TimeSpan elapsedTime)
+    {
+        ElapsedTime = elapsedTime;
+    }
+
+    public void SetA(double a)
+    {
+        A = a;
+    }
+
+    public void SetP(double p)
+    { 
+        P = p; 
     }
 }

@@ -5,9 +5,13 @@ public class MessageType
 
     public MessageType(string deviceType, MetricMessage message)
     {
-        if (message.Name == "machineStatus")
+        if (deviceType == "HCM" && message.Name == "productCount")
         {
-            Value = EMessageType.MachineStatus;
+            Value = EMessageType.HerapinCapProductCount;
+        }
+        else if (deviceType == "HCM" && message.Name == "machineStatus")
+        {
+            Value = EMessageType.HerapinCapMachineStatus;
         }
         else if (message.Name == "cycleTime")
         {
@@ -17,7 +21,7 @@ public class MessageType
         {
             Value = EMessageType.ExecutionTime;
         }
-        else if (message.Name == "badProduct")
+        else if (message.Name == "errorProduct")
         {
             Value = EMessageType.DefectsCount;
         }
@@ -29,6 +33,8 @@ public class MessageType
 
     public enum EMessageType
     {
+        HerapinCapProductCount,
+        HerapinCapMachineStatus,
         MachineStatus,
         CycleTime,
         ExecutionTime,

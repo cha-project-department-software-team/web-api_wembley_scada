@@ -1,9 +1,12 @@
 ﻿namespace WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
 public enum EMachineStatus
 {
-    Running = 1,
-    Alarm = 2,
-    Idle = 3,
+    On = 0,
+    Run = 1,
+    Idle = 2,
+    Alarm = 3,
     Setup = 4,
-    Off = 5
+    Off = 5,
+    Ready = 6,
+    WifiDisconnted= 7
 }

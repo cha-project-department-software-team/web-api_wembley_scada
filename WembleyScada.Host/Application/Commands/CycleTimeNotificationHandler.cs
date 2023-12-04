@@ -40,17 +40,17 @@ public class CycleTimeNotificationHandler : INotificationHandler<CycleTimeNotifi
         }
 
         var executionTime = _executionTimeBuffers.GetDeviceLatestExecutionTime(notification.DeviceId);
-        shiftReport.AddShot(executionTime, notification.CycleTime, notification.Timestamp);
         shiftReport.SetProductCount(shiftReport.Shots.Count);
+        shiftReport.AddShot(executionTime, notification.CycleTime, notification.Timestamp, shiftReport.A, shiftReport.P, shiftReport.Q, shiftReport.OEE);
 
         await _shiftReportRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType ,device.DeviceId, "A", shiftReport.A, notification.Timestamp);
-        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, device.DeviceId, "P", shiftReport.P, notification.Timestamp);
-        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, device.DeviceId, "Q", shiftReport.Q, notification.Timestamp);
-        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, device.DeviceId, "OEE", shiftReport.OEE, notification.Timestamp);
-        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, device.DeviceId, "products", shiftReport.ProductCount, notification.Timestamp);
-        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, device.DeviceId, "counterShot", shiftReport.Shots.Count, notification.Timestamp);
-        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, device.DeviceId, "operationTime", shiftReport.TotalCycleTime, notification.Timestamp);
+        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType ,notification.DeviceId, "A", shiftReport.A, notification.Timestamp);
+        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "P", shiftReport.P, notification.Timestamp);
+        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "Q", shiftReport.Q, notification.Timestamp);
+        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "OEE", shiftReport.OEE, notification.Timestamp);
+        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "products", shiftReport.ProductCount, notification.Timestamp);
+        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "counterShot", shiftReport.Shots.Count, notification.Timestamp);
+        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "operationTime", shiftReport.TotalCycleTime, notification.Timestamp);
     }
 }

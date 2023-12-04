@@ -9,6 +9,7 @@ using WembleyScada.Domain.AggregateModels.DeviceAggregate;
 using WembleyScada.Infrastructure.Repositories;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
+using WembleyScada.Host.Application.Buffers;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((builder, services) =>
@@ -36,6 +37,8 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton<MetricMessagePublisher>();
         services.AddSingleton<ExecutionTimeBuffers>();
+        services.AddSingleton<StatusTimeBuffers>();
+
         services.AddHostedService<UpdateShiftReportWorker>();
     })
     .Build();
