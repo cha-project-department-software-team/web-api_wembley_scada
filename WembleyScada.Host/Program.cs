@@ -10,6 +10,7 @@ using WembleyScada.Infrastructure.Repositories;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
 using WembleyScada.Host.Application.Buffers;
+using WembleyScada.Domain.AggregateModels.ErrorInformationAggregate;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((builder, services) =>
@@ -34,6 +35,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddScoped<IDeviceRepository, DeviceRepository>();
         services.AddScoped<IShiftReportRepository, ShiftReportRepository>();
         services.AddScoped<IMachineStatusRepository, MachineStatusRepository>();
+        services.AddScoped<IErrorInformationRepository, ErrorInformationRepository>();
 
         services.AddSingleton<MetricMessagePublisher>();
         services.AddSingleton<ExecutionTimeBuffers>();

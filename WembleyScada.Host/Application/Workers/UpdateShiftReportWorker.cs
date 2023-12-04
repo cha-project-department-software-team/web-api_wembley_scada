@@ -87,6 +87,11 @@ public class UpdateShiftReportWorker : BackgroundService
                     var defectCountNotification = new DefectCountNotification(deviceType, deviceId, defectsCount, metric.Timestamp);
                     await mediator.Publish(defectCountNotification);
                     break;
+                case MessageType.EMessageType.ErrorStatus:
+                    var errorValue = Convert.ToInt32(metric.Value);
+                    var errorStatusNotification = new ErrorStatusNotification(deviceType, deviceId, metric.Name, errorValue, metric.Timestamp);
+                    await mediator.Publish(errorStatusNotification);
+                    break;
             }
         }
     }

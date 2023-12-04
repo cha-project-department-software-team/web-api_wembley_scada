@@ -25,6 +25,10 @@ public class MessageType
         {
             Value = EMessageType.DefectsCount;
         }
+        else if (message.Name.StartsWith("M"))
+        {
+            Value = EMessageType.ErrorStatus;
+        }
         else
         {
             Value = EMessageType.Unspecified;
@@ -39,6 +43,7 @@ public class MessageType
         CycleTime,
         ExecutionTime,
         DefectsCount,
+        ErrorStatus,
         Unspecified
     }
 }

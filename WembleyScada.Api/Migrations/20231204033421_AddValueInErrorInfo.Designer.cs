@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WembleyScada.Infrastructure;
 
@@ -11,9 +12,11 @@ using WembleyScada.Infrastructure;
 namespace WembleyScada.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231204033421_AddValueInErrorInfo")]
+    partial class AddValueInErrorInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,26 +107,6 @@ namespace WembleyScada.Api.Migrations
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ErrorInformationAggregate.ErrorInformation", b =>
                 {
-                    b.Property<string>("ErrorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("DeviceId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ErrorName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ErrorId");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("ErrorInformations");
-                });
-
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ErrorInformationAggregate.ErrorStatus", b =>
-                {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
@@ -133,9 +116,17 @@ namespace WembleyScada.Api.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ErrorId")
+                    b.Property<string>("DeviceId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ErrorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ErrorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ShiftNumber")
                         .HasColumnType("int");
@@ -148,9 +139,9 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ErrorId");
+                    b.HasIndex("DeviceId");
 
-                    b.ToTable("ErrorStatus");
+                    b.ToTable("ErrorInformations");
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.MachineStatusAggregate.MachineStatus", b =>
@@ -356,17 +347,6 @@ namespace WembleyScada.Api.Migrations
                     b.Navigation("Device");
                 });
 
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ErrorInformationAggregate.ErrorStatus", b =>
-                {
-                    b.HasOne("WembleyScada.Domain.AggregateModels.ErrorInformationAggregate.ErrorInformation", "ErrorInformation")
-                        .WithMany("ErrorStatuses")
-                        .HasForeignKey("ErrorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ErrorInformation");
-                });
-
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.MachineStatusAggregate.MachineStatus", b =>
                 {
                     b.HasOne("WembleyScada.Domain.AggregateModels.DeviceAggregate.Device", "Device")
@@ -452,11 +432,6 @@ namespace WembleyScada.Api.Migrations
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate.DeviceReference", b =>
                 {
                     b.Navigation("MFCs");
-                });
-
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ErrorInformationAggregate.ErrorInformation", b =>
-                {
-                    b.Navigation("ErrorStatuses");
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ProductAggregate.Product", b =>

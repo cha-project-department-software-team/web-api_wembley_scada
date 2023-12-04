@@ -51,6 +51,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         modelBuilder.ApplyConfiguration(new ShiftReportEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new MachineStatusEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ErrorInformationEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ErrorStatusEntityTypeConfiguration());
     }
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)

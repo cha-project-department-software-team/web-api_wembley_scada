@@ -1,8 +1,6 @@
 ﻿namespace WembleyScada.Domain.AggregateModels.ErrorInformationAggregate;
 
-public interface IErrorInformationRepository
+public interface IErrorInformationRepository : IRepository<ErrorInformation>
 {
-    public Task AddAsync(ErrorInformation errorInformation);
-    public Task<bool> ExistsAsync(string deviceId, DateTime timestamp);
-    public Task<ErrorInformation?> GetLatestAsync(string deviceId);
+    public Task<ErrorInformation?> GetAsync(string errorId);
 }

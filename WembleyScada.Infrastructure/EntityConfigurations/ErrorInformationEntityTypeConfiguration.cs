@@ -7,13 +7,9 @@ public class ErrorInformationEntityTypeConfiguration : IEntityTypeConfiguration<
 {
     public void Configure(EntityTypeBuilder<ErrorInformation> builder)
     {
-        builder.HasKey(x => x.Id);
-        builder.Property(p => p.Id)
-            .IsRequired()
-            .ValueGeneratedOnAdd();
+        builder.HasKey(p => p.ErrorId);
 
-        builder.HasOne(p => p.Device)
-            .WithMany()
-            .HasForeignKey(p => p.DeviceId);
+        builder.HasOne(p => p.Device).WithMany().HasForeignKey(p => p.DeviceId);
+        builder.HasMany(p => p.ErrorStatuses).WithOne(p => p.ErrorInformation).HasForeignKey(p => p.ErrorId);
     }
 }
