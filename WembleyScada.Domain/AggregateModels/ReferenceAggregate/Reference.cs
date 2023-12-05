@@ -25,14 +25,20 @@ public class Reference : IAggregateRoot
         Lots = lots;
     }
 
-    public void AddLot(string lotId, int lotSize)
+    public void AddLot(string lotId, int lotSize, DateTime timestamp)
     {
-        var lot = new Lot(lotId, lotSize);
+        var lot = new Lot(lotId, lotSize, timestamp);
         if (Lots.Any(d => d.LotId == lotId))
         {
             throw new ChildEntityDuplicationException(lotId, lot, Id, this);
         }
 
         Lots.Add(lot);
+    }
+
+    public void UpdateLot(string lotId, int lotSize, DateTime timestamp)
+    {
+        var lot = Lots.OrderByDescending(x => x.Timestamp).First();
+        lot.Update(lotId, lotSize, timestamp);
     }
 }

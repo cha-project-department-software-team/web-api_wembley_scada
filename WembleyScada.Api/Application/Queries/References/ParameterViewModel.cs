@@ -2,7 +2,7 @@
 
 namespace WembleyScada.Api.Application.Queries.References;
 
-public class ReferenceWithLotViewModel
+public class ParameterViewModel
 {
     public string DeviceType { get; set; }
     public string ProductName { get; set; }
@@ -11,7 +11,7 @@ public class ReferenceWithLotViewModel
     public int LotSize { get; set; }
     public List<DeviceReferenceViewModel> Devices { get; set; }
 
-    public ReferenceWithLotViewModel(string deviceType, string productName, string refName, string lotId, int lotSize, List<DeviceReferenceViewModel> devices)
+    public ParameterViewModel(string deviceType, string productName, string refName, string lotId, int lotSize, List<DeviceReferenceViewModel> devices)
     {
         DeviceType = deviceType;
         ProductName = productName;

@@ -2,21 +2,21 @@
 
 namespace WembleyScada.Api.Application.Commands.References;
 
-public class CreateLotCommandHandler : IRequestHandler<CreateLotCommand, bool>
+public class UpdateLotCommandHandler : IRequestHandler<UpdateLotCommand, bool>
 {
     private readonly IReferenceRepository _referenceRepository;
 
-    public CreateLotCommandHandler(IReferenceRepository referenceRepository)
+    public UpdateLotCommandHandler(IReferenceRepository referenceRepository)
     {
         _referenceRepository = referenceRepository;
     }
 
-    public async Task<bool> Handle(CreateLotCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(UpdateLotCommand request, CancellationToken cancellationToken)
     {
         var reference = await _referenceRepository.GetAsync(request.RefName) ?? throw new ResourceNotFoundException($"The entity of type '{nameof(Reference)}' with Name '{request.RefName}' cannot be found.");
 
-        reference.AddLot(request.LotId, request.LotSize, DateTime.UtcNow.AddHours(7));
+        reference.UpdateLot(request.LotId, request.LotSize, DateTime.UtcNow.AddHours(7));
 
-        return await _referenceRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+       return await _referenceRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     }
 }

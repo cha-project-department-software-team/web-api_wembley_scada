@@ -39,9 +39,26 @@ public class ReferencesController : ControllerBase
         }
     }
 
+    [HttpPut]
+    [Route("{refName}")]
+    public async Task<IActionResult> UpdateLot([FromRoute] string refName, [FromBody]UpdateLotViewModel lot)
+    {
+        var command = new UpdateLotCommand(refName, lot.LotId, lot.LotSize);
+        try
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+        catch (ResourceNotFoundException ex)
+        {
+            var errorMessage = new ErrorMessage(ex);
+            return NotFound(errorMessage);
+        }
+    }
+
     [HttpGet]
     [Route("Parameters")]
-    public async Task<ReferenceWithLotViewModel> GetReferenceWithLot([FromQuery]ReferenceWithLotsQuery query)
+    public async Task<IEnumerable<ParameterViewModel>> GetReferenceWithLot([FromQuery]ParametersQuery query)
     {
         return await _mediator.Send(query);
     }
