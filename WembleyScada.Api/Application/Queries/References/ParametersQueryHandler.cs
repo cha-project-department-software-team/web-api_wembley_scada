@@ -26,7 +26,12 @@ public class ParametersQueryHandler : IRequestHandler<ParametersQuery, IEnumerab
         if (request.DeviceType is not null)
         {
             queryable = queryable.Where(x => x.DeviceType == request.DeviceType);
-        } 
+        }
+
+        if (request.ReferenceId is not null)
+        {
+            queryable = queryable.Where(x => x.Id == request.ReferenceId);
+        }
 
         var references = await queryable.ToListAsync();
 
