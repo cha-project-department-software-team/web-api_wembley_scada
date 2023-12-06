@@ -27,6 +27,12 @@ public class ShiftReportDetailsQueryHandler : IRequestHandler<ShiftReportDetails
             queryable = queryable.Where(x => x.Id == request.ShiftReportId);
         }
 
+        if (request.Date is not null && request.ShiftNumber is not null)
+        {
+            queryable = queryable.Where(x => x.Date == request.Date
+                                    && x.ShiftNumber == request.ShiftNumber);
+        }
+
         var shiftReports = await queryable.ToListAsync();
         return _mapper.Map<IEnumerable<ShiftReportDetailViewModel>>(shiftReports);
     }

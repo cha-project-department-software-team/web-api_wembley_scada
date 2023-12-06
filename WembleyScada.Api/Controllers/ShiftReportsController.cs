@@ -28,7 +28,7 @@ public class ShiftReportsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("shiftReportId")]
+    [Route("Details")]
     public async Task<IEnumerable<ShiftReportDetailViewModel>> GetShiftReportDetails([FromQuery]ShiftReportDetailsQuery query)
     {
         return await _mediator.Send(query);
