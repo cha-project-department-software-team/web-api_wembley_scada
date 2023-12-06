@@ -23,4 +23,9 @@ public class DeviceReference : IAggregateRoot
         Device = device;
         MFCs = mFCs;
     }
+
+    public void UpdateMFC(List<MFC> mFCs)
+    {
+        MFCs = mFCs;
+    }
 }

@@ -12,6 +12,7 @@ using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Infrastructure.Repositories;
 using WembleyScada.Domain.AggregateModels.ReferenceAggregate;
+using WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,9 +59,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddAutoMapper(typeof(ModelToViewModelProfile));
+builder.Services.AddAutoMapper(typeof(ViewModelToModelProfile));
 builder.Services.AddMediatR(cfg =>
     {
         cfg.RegisterServicesFromAssemblyContaining<ModelToViewModelProfile>();
+        cfg.RegisterServicesFromAssemblyContaining<ViewModelToModelProfile>();
         cfg.RegisterServicesFromAssemblyContaining<ApplicationDbContext>();
         cfg.RegisterServicesFromAssemblyContaining<Entity>();
     });
@@ -76,6 +79,7 @@ builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IShiftReportRepository, ShiftReportRepository>();
 builder.Services.AddScoped<IMachineStatusRepository, MachineStatusRepository>();
 builder.Services.AddScoped<IReferenceRepository, ReferenceRepository>();
+builder.Services.AddScoped<IDeviceReferenceRepository, DeviceReferenceRepository>();
 
 
 var app = builder.Build();

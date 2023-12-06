@@ -1,23 +1,22 @@
-﻿namespace WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate;
+﻿using System.Runtime.Serialization;
 
-public class MFC
+namespace WembleyScada.Api.Application.Commands.DeviceReferences;
+
+[DataContract]
+public class UpdateMFCViewModel
 {
-    public int Id { get; set; }
+    [DataMember]
     public string Name { get; set; }
+    [DataMember]
     public double Value { get; set; }
-    public string DeviceId { get; set; }
-    public int ReferenceId { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private MFC() { }
+    private UpdateMFCViewModel() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    public MFC(int id, string name, double value, string deviceId, int referenceId)
+    public UpdateMFCViewModel(string name, double value)
     {
-        Id = id;
         Name = name;
         Value = value;
-        DeviceId = deviceId;
-        ReferenceId = referenceId;
     }
 }
