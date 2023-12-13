@@ -28,15 +28,10 @@ public class HerapinCapProductCountNotificationHandler : INotificationHandler<He
             return;
         }
 
-        var shiftReport = new ShiftReport(device, notification.Timestamp);
-        var existingShiftReport = await _shiftReportRepository.GetAsync(device.DeviceId, shiftReport.ShiftNumber, shiftReport.Date);
-        if (existingShiftReport is not null)
+        var shiftReport = await _shiftReportRepository.GetLatestAsync(notification.DeviceId);
+        if (shiftReport is null)
         {
-            shiftReport = existingShiftReport;
-        }
-        else
-        {
-            await _shiftReportRepository.AddAsync(shiftReport);
+            return;
         }
 
         var startTime = _statusTimeBuffers.GetStartTime(notification.DeviceId);
@@ -47,7 +42,7 @@ public class HerapinCapProductCountNotificationHandler : INotificationHandler<He
         var elapsedTime = notification.Timestamp - startTime;
 
         double A = runningTime / elapsedTime;
-        double P = (3 * (notification.ProductCount / 4)) / (runningTime.TotalMilliseconds / 1000);
+        double P = (2.75 * (notification.ProductCount / 4)) / (runningTime.TotalMilliseconds / 1000);
         
         shiftReport.SetA(A);
         shiftReport.SetP(P);
@@ -62,5 +57,6 @@ public class HerapinCapProductCountNotificationHandler : INotificationHandler<He
         await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "Q", shiftReport.Q, notification.Timestamp);
         await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "OEE", shiftReport.OEE, notification.Timestamp);
         await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "operationTime", shiftReport.ElapsedTime, notification.Timestamp);
+        await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "goodProduct", shiftReport.ProductCount - shiftReport.DefectCount, notification.Timestamp);
     }
 }

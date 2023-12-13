@@ -29,7 +29,6 @@ public class MachineStatus : IAggregateRoot
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public MachineStatus(Device device, EMachineStatus status, DateTime timestamp)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
         var shiftNumber = ShiftTimeHelper.GetShiftNumber(timestamp);
         var date = ShiftTimeHelper.GetShiftDate(timestamp);
@@ -39,4 +38,15 @@ public class MachineStatus : IAggregateRoot
         Status = status;
         Timestamp = timestamp;
     }
+
+    public MachineStatus(Device device, EMachineStatus status, int shiftNumber, DateTime date, DateTime timestamp)
+    {
+        Device = device;
+        Status = status;
+        ShiftNumber = shiftNumber;
+        Date = date;
+        Timestamp = timestamp;
+    }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

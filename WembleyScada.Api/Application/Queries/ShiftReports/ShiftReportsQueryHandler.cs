@@ -22,6 +22,8 @@ public class ShiftReportsQueryHandler : IRequestHandler<ShiftReportsQuery, IEnum
             .Where(x => x.DeviceId == request.DeviceId
                      && x.Date >= request.StartTime
                      && x.Date <= request.EndTime)
+            .OrderByDescending(x => x.Date)
+            .ThenByDescending(x => x.ShiftNumber)
             .AsNoTracking();
 
         var shiftReports = await queryable.ToListAsync();

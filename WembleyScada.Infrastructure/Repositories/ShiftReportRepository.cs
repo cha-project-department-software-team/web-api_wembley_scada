@@ -30,4 +30,14 @@ public class ShiftReportRepository : BaseRepository, IShiftReportRepository
             .Include(x => x.Device)
             .FirstOrDefaultAsync(x => x.DeviceId == deviceId && x.ShiftNumber == shiftNumber && x.Date == date);
     }
+
+    public async Task<ShiftReport?> GetLatestAsync(string deviceId)
+    {
+        return await _context.ShiftReports
+            .Include(x => x.Shots)
+            .Include(x => x.Device)
+            .OrderByDescending(x => x.Date)
+            .ThenByDescending(x => x.ShiftNumber)
+            .FirstOrDefaultAsync();
+    }
 }

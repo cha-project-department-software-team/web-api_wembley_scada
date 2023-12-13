@@ -23,9 +23,9 @@ public class ErrorInformation : IAggregateRoot
         ErrorStatuses = errorStatuses;
     }
 
-    public void AddErrorStatus(int value, DateTime timestamp)
+    public void AddErrorStatus(int value, DateTime date, int shiftNumber, DateTime timestamp)
     {
-        var errorStatus = new ErrorStatus(value, timestamp);
+        var errorStatus = new ErrorStatus(value, date, shiftNumber, timestamp);
         ErrorStatuses.Add(errorStatus);
     }
 }

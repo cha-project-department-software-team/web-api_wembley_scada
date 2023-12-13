@@ -24,5 +24,13 @@ public class ErrorStatus
         ShiftNumber = shiftNumber;
         Timestamp = timestamp;
     }
+
+    public ErrorStatus(int value, DateTime date, int shiftNumber, DateTime timestamp)
+    {
+        Value = value;
+        Date = date;
+        ShiftNumber = shiftNumber;
+        Timestamp = timestamp;
+    }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 }

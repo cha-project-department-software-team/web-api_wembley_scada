@@ -22,7 +22,7 @@ public class ShiftReport : IAggregateRoot
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ShiftReport() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    public ShiftReport(int shiftNumber, DateTime date, Device device)
+    public ShiftReport(Device device, int shiftNumber, DateTime date)
     {
         ShiftNumber = shiftNumber;
         Date = date;

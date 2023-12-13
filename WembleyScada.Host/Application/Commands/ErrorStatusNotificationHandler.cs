@@ -8,11 +8,13 @@ namespace WembleyScada.Host.Application.Commands;
 public class ErrorStatusNotificationHandler : INotificationHandler<ErrorStatusNotification>
 {
     private readonly IErrorInformationRepository _errorInformationRepository;
+    private readonly IShiftReportRepository _shiftReportRepository;
     private readonly MetricMessagePublisher _metricMessagePublisher;
 
-    public ErrorStatusNotificationHandler(IErrorInformationRepository errorInformationRepository, MetricMessagePublisher metricMessagePublisher)
+    public ErrorStatusNotificationHandler(IErrorInformationRepository errorInformationRepository, IShiftReportRepository shiftReportRepository, MetricMessagePublisher metricMessagePublisher)
     {
         _errorInformationRepository = errorInformationRepository;
+        _shiftReportRepository = shiftReportRepository;
         _metricMessagePublisher = metricMessagePublisher;
     }
 
@@ -24,7 +26,13 @@ public class ErrorStatusNotificationHandler : INotificationHandler<ErrorStatusNo
             return;
         }
 
-        errorInformation.AddErrorStatus(notification.Value, notification.Timestamp);
+        var shiftReport = await _shiftReportRepository.GetLatestAsync(notification.DeviceId);
+        if (shiftReport is null)
+        {
+            return;
+        }
+
+        errorInformation.AddErrorStatus(notification.Value, shiftReport.Date, shiftReport.ShiftNumber, notification.Timestamp);
 
         await _errorInformationRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 

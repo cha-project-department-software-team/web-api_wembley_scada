@@ -20,6 +20,8 @@ public class DownloadReportsQueryHandler : IRequestHandler<DownloadReportsQuery,
             .Where(x => x.DeviceId == request.DeviceId
                      && x.Date >= request.StartTime
                      && x.Date <= request.EndTime)
+            .OrderByDescending(x => x.Date)
+            .ThenByDescending(x => x.ShiftNumber)
             .Include(x => x.Shots)
             .AsNoTracking();
 
