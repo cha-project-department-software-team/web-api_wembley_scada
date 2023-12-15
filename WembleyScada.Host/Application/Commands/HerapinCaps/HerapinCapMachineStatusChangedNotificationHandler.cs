@@ -35,56 +35,65 @@ public class HerapinCapMachineStatusChangedNotificationHandler : INotificationHa
 
         if (notification.MachineStatus == EMachineStatus.On)
         {
-            _statusTimeBuffers.UpdateStartTime(notification.DeviceId, notification.Timestamp);
-            _statusTimeBuffers.UpdateTotalPreviousRunningTime(notification.DeviceId, TimeSpan.Zero);
-
-            var latestShiftReport = await _shiftReportRepository.GetLatestAsync(notification.DeviceId);
-
-            var date = notification.Timestamp.Date;
-            int shiftNumber = new();
-
-            if (latestShiftReport is null || date != latestShiftReport.Date)
-            {
-                shiftNumber = 1;
-            }
-            else
-            {
-                shiftNumber = latestShiftReport.ShiftNumber + 1;
-            }
-
-            var shiftReport = new ShiftReport(device, shiftNumber, date);
-            await _shiftReportRepository.AddAsync(shiftReport);
-            await _shiftReportRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            await HandleOnStatus(notification, device, cancellationToken);
         }
-
         else if (notification.MachineStatus == EMachineStatus.Run)
         {
             _statusTimeBuffers.UpdateStartRunningTime(notification.DeviceId, notification.Timestamp);
         }
-
         else
         {
-            if (latestStatus is not null && latestStatus.Status == EMachineStatus.Run) 
-            {
-                var previousRunningTime = _statusTimeBuffers.GetTotalPreviousRunningTime(notification.DeviceId);
-                var startRunningTime = _statusTimeBuffers.GetStartRunningTime(notification.DeviceId);
-                var runningTime = notification.Timestamp - startRunningTime;
-                _statusTimeBuffers.UpdateTotalPreviousRunningTime(notification.DeviceId, previousRunningTime + runningTime);
-
-                //In case still receive ProductCount while Machine Status is "error" and do not effect to OEE in normal case
-                _statusTimeBuffers.UpdateStartRunningTime(notification.DeviceId, notification.Timestamp);
-            }
+            HandleErrorStatus(notification, latestStatus);
         }
 
         if (notification.MachineStatus == EMachineStatus.WifiDisconnted)
         {
-            if (latestStatus is not null && latestStatus.Status == EMachineStatus.Off)
-            {
-                await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "machineStatus", EMachineStatus.Off, notification.Timestamp);
-                return;
-            }
+            await HandleWifiDisconnectedStatus(notification, latestStatus);
         }
 
+        await UpdateMachineStatus(notification, device, latestStatus, cancellationToken);
+    }
+
+    private async Task HandleOnStatus(HerapinCapMachineStatusChangedNotification notification, Device device, CancellationToken cancellationToken)
+    {
+        _statusTimeBuffers.UpdateStartTime(notification.DeviceId, notification.Timestamp);
+        _statusTimeBuffers.UpdateTotalPreviousRunningTime(notification.DeviceId, TimeSpan.Zero);
+
+        var latestShiftReport = await _shiftReportRepository.GetLatestAsync(notification.DeviceId);
+
+        var date = notification.Timestamp.Date;
+        int shiftNumber = (latestShiftReport is null || date != latestShiftReport.Date) ? 1 : latestShiftReport.ShiftNumber + 1;
+
+        var shiftReport = new ShiftReport(device, shiftNumber, date);
+        await _shiftReportRepository.AddAsync(shiftReport);
+        await _shiftReportRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+    }
+
+    private void HandleErrorStatus(HerapinCapMachineStatusChangedNotification notification, MachineStatus? latestStatus)
+    {
+        if (latestStatus is not null && latestStatus.Status == EMachineStatus.Run)
+        {
+            var previousRunningTime = _statusTimeBuffers.GetTotalPreviousRunningTime(notification.DeviceId);
+            var startRunningTime = _statusTimeBuffers.GetStartRunningTime(notification.DeviceId);
+            var runningTime = notification.Timestamp - startRunningTime;
+            _statusTimeBuffers.UpdateTotalPreviousRunningTime(notification.DeviceId, previousRunningTime + runningTime);
+
+            // In case still receive ProductCount while Machine Status is "error" and do not affect OEE in normal case
+            _statusTimeBuffers.UpdateStartRunningTime(notification.DeviceId, notification.Timestamp);
+        }
+    }
+
+    private async Task HandleWifiDisconnectedStatus(HerapinCapMachineStatusChangedNotification notification, MachineStatus? latestStatus)
+    {
+        if (latestStatus is not null && latestStatus.Status == EMachineStatus.Off)
+        {
+            await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "machineStatus", EMachineStatus.Off, notification.Timestamp);
+            return;
+        }
+    }
+
+    private async Task UpdateMachineStatus(HerapinCapMachineStatusChangedNotification notification, Device device, MachineStatus? latestStatus, CancellationToken cancellationToken)
+    {
         var newestShiftReport = await _shiftReportRepository.GetLatestAsync(notification.DeviceId);
         if (newestShiftReport is null)
         {

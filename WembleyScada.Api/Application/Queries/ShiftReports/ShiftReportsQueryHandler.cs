@@ -27,7 +27,6 @@ public class ShiftReportsQueryHandler : IRequestHandler<ShiftReportsQuery, IEnum
             .AsNoTracking();
 
         var shiftReports = await queryable.ToListAsync();
-
         return _mapper.Map<IEnumerable<ShiftReportViewModel>>(shiftReports);
     }
 }

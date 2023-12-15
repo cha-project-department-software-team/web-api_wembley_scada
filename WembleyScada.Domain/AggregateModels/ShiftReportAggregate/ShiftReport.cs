@@ -16,8 +16,8 @@ public class ShiftReport : IAggregateRoot
     public TimeSpan ElapsedTime { get; set; }
     public double A { get; set; }
     public double P { get; set; }
-    public double Q => (double)(ProductCount - DefectCount) / (double)ProductCount;
-    public double OEE => A * P * Q;
+    public double Q => Shots.Count > 0 ? (double)(ProductCount - DefectCount) / (double)ProductCount : 0;
+    public double OEE => Shots.Count > 0 ? A * P * Q : 0;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ShiftReport() { }

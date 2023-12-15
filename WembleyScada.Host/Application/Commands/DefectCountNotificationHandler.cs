@@ -16,9 +16,7 @@ public class DefectCountNotificationHandler : INotificationHandler<DefectCountNo
 
     public async Task Handle(DefectCountNotification notification, CancellationToken cancellationToken)
     {
-        var shiftNumber = ShiftTimeHelper.GetShiftNumber(notification.Timestamp);
-        var shiftDate = ShiftTimeHelper.GetShiftDate(notification.Timestamp);
-        var shiftReport = await _shiftReportRepository.GetAsync(notification.DeviceId, shiftNumber, shiftDate);
+        var shiftReport = await _shiftReportRepository.GetLatestAsync(notification.DeviceId);
         if (shiftReport is null)
         {
             return;
