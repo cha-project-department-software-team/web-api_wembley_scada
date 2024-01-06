@@ -6,12 +6,12 @@ public class PersonWorkRecordViewModel
 {
     public DeviceViewModel Device { get; set; }
     public DateTime StartTime { get; set; }
-    public DateTime Date { get; set; }
+    public DateTime EndTime { get; set; }
 
-    public PersonWorkRecordViewModel(DeviceViewModel device, DateTime startTime, DateTime date)
+    public PersonWorkRecordViewModel(DeviceViewModel device, DateTime startTime, DateTime endTime)
     {
         Device = device;
         StartTime = startTime;
-        Date = date;
+        EndTime = endTime;
     }
 }

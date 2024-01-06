@@ -70,4 +70,21 @@ public class PersonsController : ControllerBase
             return NotFound(errorMessage);
         }
     }
-}
+
+    [HttpPut]
+    [Route("PersonWorkRecords/{deviceId}")]
+    public async Task<IActionResult> UpdatePersonWorkRecord([FromRoute] string deviceId, [FromBody] UpdatePersonWorkRecordViewModel personWorkRecord)
+    {
+        var command = new UpdatePersonWorkRecordCommand(deviceId, personWorkRecord.PersonIds);
+        try
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+        catch (ResourceNotFoundException ex)
+        {
+            var errorMessage = new ErrorMessage(ex);
+            return NotFound(errorMessage);
+        }
+    }
+} 

@@ -1,6 +1,4 @@
-﻿using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
-
-namespace WembleyScada.Domain.AggregateModels.ReferenceAggregate;
+﻿namespace WembleyScada.Domain.AggregateModels.ReferenceAggregate;
 
 public class Lot
 {
@@ -23,14 +21,15 @@ public class Lot
         StartTime = startTime;
     }
 
-    public void Update(string lotId, int lotSize, ELotStatus? lotStatus, DateTime? endTime)
+    public void Update(string lotId, int lotSize)
     {
         LotId = lotId;
         LotSize = lotSize;
-        if (lotStatus is not null)
-        {
-            LotStatus = (ELotStatus)lotStatus;
-        }
+    }
+
+    public void UpdateStatus(ELotStatus lotStatus, DateTime endTime)
+    {
+        LotStatus = lotStatus;
         EndTime = endTime;
     }
 }

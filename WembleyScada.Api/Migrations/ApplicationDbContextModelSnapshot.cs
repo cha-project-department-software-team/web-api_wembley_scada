@@ -34,7 +34,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("DeviceProduct");
+                    b.ToTable("DeviceProduct", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.DeviceAggregate.Device", b =>
@@ -55,7 +55,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasKey("DeviceId");
 
-                    b.ToTable("Devices");
+                    b.ToTable("Devices", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate.DeviceReference", b =>
@@ -70,7 +70,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("ReferenceId");
 
-                    b.ToTable("DeviceReferences");
+                    b.ToTable("DeviceReferences", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate.MFC", b =>
@@ -99,7 +99,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("DeviceId", "ReferenceId");
 
-                    b.ToTable("MFC");
+                    b.ToTable("MFC", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ErrorInformationAggregate.ErrorInformation", b =>
@@ -119,7 +119,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("ErrorInformations");
+                    b.ToTable("ErrorInformations", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ErrorInformationAggregate.ErrorStatus", b =>
@@ -150,7 +150,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("ErrorId");
 
-                    b.ToTable("ErrorStatus");
+                    b.ToTable("ErrorStatus", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.MachineStatusAggregate.MachineStatus", b =>
@@ -181,7 +181,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("MachineStatus");
+                    b.ToTable("MachineStatus", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.PersonAggregate.Person", b =>
@@ -195,7 +195,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasKey("PersonId");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Persons", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.PersonAggregate.PersonWorkRecord", b =>
@@ -229,7 +229,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.ToTable("PersonWorkRecord");
+                    b.ToTable("PersonWorkRecord", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ProductAggregate.Product", b =>
@@ -250,7 +250,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Lot", b =>
@@ -287,7 +287,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("ReferenceId");
 
-                    b.ToTable("Lot");
+                    b.ToTable("Lot", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Reference", b =>
@@ -316,7 +316,7 @@ namespace WembleyScada.Api.Migrations
                     b.HasIndex("RefName")
                         .IsUnique();
 
-                    b.ToTable("References");
+                    b.ToTable("References", (string)null);
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ShiftReportAggregate.ShiftReport", b =>
@@ -356,7 +356,7 @@ namespace WembleyScada.Api.Migrations
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("ShiftReports");
+                    b.ToTable("ShiftReports", (string)null);
                 });
 
             modelBuilder.Entity("DeviceProduct", b =>
@@ -480,7 +480,7 @@ namespace WembleyScada.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("WembleyScada.Domain.AggregateModels.ShiftReportAggregate.Shot", "Shots", b1 =>
+                    b.OwnsMany("WembleyScada.Domain.AggregateModels.ShiftReportAggregate.ShiftReport.Shots#WembleyScada.Domain.AggregateModels.ShiftReportAggregate.Shot", "Shots", b1 =>
                         {
                             b1.Property<int>("ShiftReportId")
                                 .HasColumnType("int");
@@ -514,7 +514,7 @@ namespace WembleyScada.Api.Migrations
 
                             b1.HasKey("ShiftReportId", "Id");
 
-                            b1.ToTable("Shot");
+                            b1.ToTable("Shot", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ShiftReportId");

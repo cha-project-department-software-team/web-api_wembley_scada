@@ -43,7 +43,7 @@ public class ReferencesController : ControllerBase
     [Route("{refName}")]
     public async Task<IActionResult> UpdateLot([FromRoute] string refName, [FromBody]UpdateLotViewModel lot)
     {
-        var command = new UpdateLotCommand(refName, lot.LotId, lot.LotSize, lot.LotStatus, lot.EndTime);
+        var command = new UpdateLotCommand(refName, lot.LotId, lot.LotSize);
         try
         {
             var response = await _mediator.Send(command);
@@ -58,8 +58,25 @@ public class ReferencesController : ControllerBase
 
     [HttpGet]
     [Route("Parameters")]
-    public async Task<IEnumerable<ParameterViewModel>> GetReferenceWithLot([FromQuery]ParametersQuery query)
+    public async Task<IEnumerable<ParameterViewModel>> GetParameter([FromQuery] ParametersQuery query)
     {
         return await _mediator.Send(query);
+    }
+
+    [HttpPut]
+    [Route("Parameters/Completed/{refName}")]
+    public async Task<IActionResult> UpdateParameter([FromRoute] string refName)
+    {
+        var command = new UpdateParameterCommand(refName);
+        try
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+        catch (ResourceNotFoundException ex)
+        {
+            var errorMessage = new ErrorMessage(ex);
+            return NotFound(errorMessage);
+        }
     }
 }

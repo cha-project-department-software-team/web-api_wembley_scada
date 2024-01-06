@@ -7,11 +7,11 @@ public class ParameterViewModel
     public string DeviceType { get; set; }
     public string ProductName { get; set; }
     public string RefName { get; set; }
-    public string? LotId { get; set; }
-    public int? LotSize { get; set; }
-    public List<DeviceReferenceViewModel> Devices { get; set; }
+    public string LotId { get; set; }
+    public int LotSize { get; set; }
+    public List<DeviceInfoViewModel> Devices { get; set; }
 
-    public ParameterViewModel(string deviceType, string productName, string refName, string? lotId, int? lotSize, List<DeviceReferenceViewModel> devices)
+    public ParameterViewModel(string deviceType, string productName, string refName, string lotId, int lotSize, List<DeviceInfoViewModel> devices)
     {
         DeviceType = deviceType;
         ProductName = productName;

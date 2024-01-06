@@ -36,12 +36,22 @@ public class Reference : IAggregateRoot
         Lots.Add(lot);
     }
 
-    public void UpdateLot(string lotId, int lotSize, ELotStatus? lotStatus, DateTime? endTime)
+    public void UpdateLot(string lotId, int lotSize)
     {
         var lot = Lots.FirstOrDefault(x => x.LotStatus == ELotStatus.Working);
         if (lot is not null)
         {
-            lot.Update(lotId, lotSize, lotStatus, endTime);
+            lot.Update(lotId, lotSize);
         }
+    }
+
+    public void UpdateLotStatus(ELotStatus lotStatus, DateTime endTime)
+    {
+        var lot = Lots.FirstOrDefault(x => x.LotStatus == ELotStatus.Working);
+        if (lot is null)
+        {
+            throw new Exception($"All Lots is completed in this RefName: {RefName}");
+        }
+        lot.UpdateStatus(lotStatus, endTime);
     }
 }

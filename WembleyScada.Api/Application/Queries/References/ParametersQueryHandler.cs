@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using WembleyScada.Api.Application.Queries.DeviceReferences;
+using WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate;
+using WembleyScada.Domain.AggregateModels.PersonAggregate;
 using WembleyScada.Domain.AggregateModels.ReferenceAggregate;
 using WembleyScada.Infrastructure;
 
@@ -45,24 +48,48 @@ public class ParametersQueryHandler : IRequestHandler<ParametersQuery, IEnumerab
         {
             var lot = reference.Lots.Find(x => x.LotStatus == ELotStatus.Working);
 
-            var deviceReferences = await _context.DeviceReferences
+            var viewModel = new ParameterViewModel(
+                reference.DeviceType,
+                reference.Product.ProductName,
+                reference.RefName,
+                lot is null ? string.Empty : lot.LotId,
+                lot is null ? 0 : lot.LotSize,
+                await MapToDeviceInfoViewModel(reference));
+
+            viewModels.Add(viewModel);
+        }
+
+        return viewModels;
+    }
+
+    private async Task<List<DeviceInfoViewModel>> MapToDeviceInfoViewModel(Reference reference)
+    {
+        var viewModels = new List<DeviceInfoViewModel>();
+
+        var deviceReferences = await _context.DeviceReferences
                 .Include(x => x.Device)
+                .ThenInclude(x => x.WorkRecords)
+                .ThenInclude(x => x.Person)
                 .Include(x => x.Reference)
                 .Include(x => x.MFCs)
                 .Where(x => x.ReferenceId == reference.Id)
                 .ToListAsync();
 
-            var viewModel = new ParameterViewModel(
-                reference.DeviceType,
-                reference.Product.ProductName,
-                reference.RefName,
-                lot?.LotId,
-                lot?.LotSize,
-                _mapper.Map<List<DeviceReferenceViewModel>>(deviceReferences));
+        foreach (var deviceReference in deviceReferences)
+        {
+            var persons = new List<Person>();
+
+            var workRecords = deviceReference.Device.WorkRecords.Where(x => x.WorkStatus == EWorkStatus.Working).ToList();
+            workRecords.ForEach(x => persons.Add(x.Person));
+
+            var viewModel = new DeviceInfoViewModel(
+                deviceReference.DeviceId,
+                _mapper.Map<List<PersonWorkingViewModel>>(persons),
+                _mapper.Map<List<MFCViewModel>>(deviceReference.MFCs));
 
             viewModels.Add(viewModel);
         }
-
+        
         return viewModels;
     }
 }

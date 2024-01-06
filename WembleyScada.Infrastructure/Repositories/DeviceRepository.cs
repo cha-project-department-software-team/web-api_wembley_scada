@@ -10,18 +10,22 @@ public class DeviceRepository : BaseRepository, IDeviceRepository
     public async Task<Device?> GetAsync(string deviceId)
     {
         return await _context.Devices
+            .Include(x => x.WorkRecords)
             .FirstOrDefaultAsync(x => x.DeviceId == deviceId);
     }
 
     public async Task<IEnumerable<Device>> GetByTypeAsync(string type)
     {
         return await _context.Devices
-             .Where(c => c.DeviceType == type)
+             .Include(x => x.WorkRecords)
+             .Where(x => x.DeviceType == type)
              .ToListAsync();
     }
 
     public async Task<IEnumerable<Device>> GetAllDevice()
     {
-        return await _context.Devices.ToListAsync();
+        return await _context.Devices
+            .Include(x => x.WorkRecords)
+            .ToListAsync();
     }
 }

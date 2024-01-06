@@ -24,12 +24,14 @@ public class PersonWorkRecord
     }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    public void Update(EWorkStatus? workStatus, DateTime? endTime)
+    public void Update(Person person)
     {
-        if (workStatus is not null)
-        {
-            WorkStatus = (EWorkStatus)workStatus;
-        }
+        Person = person;
+    }
+
+    public void UpdateStatus(EWorkStatus workStatus, DateTime endTime) 
+    { 
+        WorkStatus = workStatus;
         EndTime = endTime;
     }
 }

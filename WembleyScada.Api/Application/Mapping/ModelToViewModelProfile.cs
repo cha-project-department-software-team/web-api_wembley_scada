@@ -42,6 +42,7 @@ public class ModelToViewModelProfile : Profile
             .ForMember(dest => dest.ErrorName, opt => opt.MapFrom(src => src.ErrorInformation.ErrorName));
 
         CreateMap<Person, PersonViewModel>();
+        CreateMap<Person, PersonWorkingViewModel>();
         CreateMap<PersonWorkRecord, PersonWorkRecordViewModel>();
     }
 }

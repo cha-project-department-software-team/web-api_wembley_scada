@@ -20,16 +20,16 @@ public class Person : IAggregateRoot
 
     public void AddPersonWorkRecord(Device device, EWorkStatus workStatus, DateTime startTime)
     {
+        if (WorkRecords.Any(x => x.WorkStatus == EWorkStatus.Working && x.DeviceId == device.DeviceId))
+        {
+            throw new Exception($"The entity PersonWorkRecord already existed with the same deviceId:{device.DeviceId}");
+        }
         var personWorkRecord = new PersonWorkRecord(device, workStatus, startTime);
         WorkRecords.Add(personWorkRecord);
     }
 
-    public void Update(Device device, EWorkStatus? workStatus, DateTime? endTime)
+    public void DeleteWorkingRecord()
     {
-        var personWorkRecord = WorkRecords.Find(x => x.WorkStatus == EWorkStatus.Working);
-        if (personWorkRecord is not null)
-        {
-            personWorkRecord.Update(workStatus, endTime);
-        }
+        WorkRecords.RemoveAll(x => x.WorkStatus == EWorkStatus.Working);
     }
 }

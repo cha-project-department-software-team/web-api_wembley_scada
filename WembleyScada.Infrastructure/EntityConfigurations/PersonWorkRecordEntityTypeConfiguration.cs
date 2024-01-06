@@ -11,5 +11,7 @@ public class PersonWorkRecordEntityTypeConfiguration : IEntityTypeConfiguration<
         builder.Property(p => p.Id)
             .IsRequired()
             .ValueGeneratedOnAdd();
+
+        builder.HasOne(x => x.Device).WithMany(x => x.WorkRecords).HasForeignKey(x => x.DeviceId);
     }
 }
