@@ -3,6 +3,7 @@ using WembleyScada.Domain.AggregateModels.DeviceAggregate;
 using WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate;
 using WembleyScada.Domain.AggregateModels.ErrorInformationAggregate;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
+using WembleyScada.Domain.AggregateModels.PersonAggregate;
 using WembleyScada.Domain.AggregateModels.ProductAggregate;
 using WembleyScada.Domain.AggregateModels.ReferenceAggregate;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
@@ -22,6 +23,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<Product> Products { get; set; }
     public DbSet<Reference> References { get; set; }
     public DbSet<DeviceReference> DeviceReferences { get; set; }
+    public DbSet<Person> Persons { get; set; }
     public DbSet<ShiftReport> ShiftReports { get; set; }
     public DbSet<MachineStatus> MachineStatus { get; set; }
     public DbSet<ErrorInformation> ErrorInformations { get; set; }
@@ -48,6 +50,8 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         modelBuilder.ApplyConfiguration(new ReferenceEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new LotEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new DeviceReferenceEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new PersonEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new PersonWorkRecordEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ShiftReportEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new MachineStatusEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ErrorInformationEntityTypeConfiguration());

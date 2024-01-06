@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WembleyScada.Infrastructure;
 
@@ -11,9 +12,11 @@ using WembleyScada.Infrastructure;
 namespace WembleyScada.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231219030631_FixPerson")]
+    partial class FixPerson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,47 +192,19 @@ namespace WembleyScada.Api.Migrations
                     b.Property<string>("PersonId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("DeviceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("PersonName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PersonId");
 
-                    b.ToTable("Persons");
-                });
-
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.PersonAggregate.PersonWorkRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DeviceId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PersonId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("WorkStatus")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
                     b.HasIndex("DeviceId");
 
-                    b.HasIndex("PersonId");
-
-                    b.ToTable("PersonWorkRecord");
+                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ProductAggregate.Product", b =>
@@ -261,7 +236,7 @@ namespace WembleyScada.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LotId")
@@ -271,13 +246,13 @@ namespace WembleyScada.Api.Migrations
                     b.Property<int>("LotSize")
                         .HasColumnType("int");
 
-                    b.Property<int>("LotStatus")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ReferenceId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<int>("ShiftNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -435,7 +410,7 @@ namespace WembleyScada.Api.Migrations
                     b.Navigation("Device");
                 });
 
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.PersonAggregate.PersonWorkRecord", b =>
+            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.PersonAggregate.Person", b =>
                 {
                     b.HasOne("WembleyScada.Domain.AggregateModels.DeviceAggregate.Device", "Device")
                         .WithMany()
@@ -443,15 +418,7 @@ namespace WembleyScada.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WembleyScada.Domain.AggregateModels.PersonAggregate.Person", "Person")
-                        .WithMany("WorkRecords")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Device");
-
-                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ReferenceAggregate.Lot", b =>
@@ -533,11 +500,6 @@ namespace WembleyScada.Api.Migrations
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ErrorInformationAggregate.ErrorInformation", b =>
                 {
                     b.Navigation("ErrorStatuses");
-                });
-
-            modelBuilder.Entity("WembleyScada.Domain.AggregateModels.PersonAggregate.Person", b =>
-                {
-                    b.Navigation("WorkRecords");
                 });
 
             modelBuilder.Entity("WembleyScada.Domain.AggregateModels.ProductAggregate.Product", b =>

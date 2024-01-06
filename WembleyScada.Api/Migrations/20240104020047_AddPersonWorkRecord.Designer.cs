@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WembleyScada.Infrastructure;
 
@@ -11,9 +12,11 @@ using WembleyScada.Infrastructure;
 namespace WembleyScada.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240104020047_AddPersonWorkRecord")]
+    partial class AddPersonWorkRecord
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,12 +209,12 @@ namespace WembleyScada.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DeviceId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("PersonId")
                         .IsRequired()
@@ -219,9 +222,6 @@ namespace WembleyScada.Api.Migrations
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("WorkStatus")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -261,7 +261,7 @@ namespace WembleyScada.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LotId")
@@ -271,13 +271,13 @@ namespace WembleyScada.Api.Migrations
                     b.Property<int>("LotSize")
                         .HasColumnType("int");
 
-                    b.Property<int>("LotStatus")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ReferenceId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<int>("ShiftNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

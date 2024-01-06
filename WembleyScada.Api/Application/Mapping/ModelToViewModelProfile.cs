@@ -3,6 +3,7 @@ using WembleyScada.Api.Application.Queries.DeviceReferences;
 using WembleyScada.Api.Application.Queries.Devices;
 using WembleyScada.Api.Application.Queries.ErrorInformations;
 using WembleyScada.Api.Application.Queries.MachineStatus;
+using WembleyScada.Api.Application.Queries.Persons;
 using WembleyScada.Api.Application.Queries.Products;
 using WembleyScada.Api.Application.Queries.References;
 using WembleyScada.Api.Application.Queries.ShiftReports;
@@ -10,6 +11,7 @@ using WembleyScada.Domain.AggregateModels.DeviceAggregate;
 using WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate;
 using WembleyScada.Domain.AggregateModels.ErrorInformationAggregate;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
+using WembleyScada.Domain.AggregateModels.PersonAggregate;
 using WembleyScada.Domain.AggregateModels.ProductAggregate;
 using WembleyScada.Domain.AggregateModels.ReferenceAggregate;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
@@ -38,5 +40,8 @@ public class ModelToViewModelProfile : Profile
 
         CreateMap<ErrorStatus, ErrorStatusViewModel>()
             .ForMember(dest => dest.ErrorName, opt => opt.MapFrom(src => src.ErrorInformation.ErrorName));
+
+        CreateMap<Person, PersonViewModel>();
+        CreateMap<PersonWorkRecord, PersonWorkRecordViewModel>();
     }
 }

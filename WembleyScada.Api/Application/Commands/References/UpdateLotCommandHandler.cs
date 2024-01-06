@@ -15,8 +15,8 @@ public class UpdateLotCommandHandler : IRequestHandler<UpdateLotCommand, bool>
     {
         var reference = await _referenceRepository.GetAsync(request.RefName) ?? throw new ResourceNotFoundException($"The entity of type '{nameof(Reference)}' with Name '{request.RefName}' cannot be found.");
 
-        reference.UpdateLot(request.LotId, request.LotSize, DateTime.UtcNow.AddHours(7));
+        reference.UpdateLot(request.LotId, request.LotSize, request.LotStatus, request.StartTime, request.EndTime);
 
-       return await _referenceRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+        return await _referenceRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     }
 }

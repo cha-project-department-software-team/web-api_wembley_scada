@@ -14,4 +14,12 @@ public class ErrorInformationRepository : BaseRepository, IErrorInformationRepos
             .Include(x => x.ErrorStatuses)
             .FirstOrDefaultAsync(x => x.ErrorId == errorId);
     }
+
+    public async Task<List<ErrorInformation>> GetByDeviceAsync(string deviceId)
+    {
+        return await _context.ErrorInformations
+           .Include(x => x.ErrorStatuses)
+           .Where(x => x.DeviceId == deviceId)
+           .ToListAsync();
+    }
 }

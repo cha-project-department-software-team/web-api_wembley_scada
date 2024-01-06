@@ -14,7 +14,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<DeviceViewModel>> GetDevices([FromQuery]DevicesQuery query)
+    public async Task<IEnumerable<DeviceViewModel>> GetDevices([FromQuery] DevicesQuery query)
     {
         return await _mediator.Send(query);
     }

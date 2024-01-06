@@ -25,9 +25,9 @@ public class Reference : IAggregateRoot
         Lots = lots;
     }
 
-    public void AddLot(string lotId, int lotSize, DateTime timestamp)
+    public void AddLot(string lotId, int lotSize, ELotStatus lotStatus, DateTime startTime)
     {
-        var lot = new Lot(lotId, lotSize, timestamp);
+        var lot = new Lot(lotId, lotSize, lotStatus, startTime);
         if (Lots.Any(d => d.LotId == lotId))
         {
             throw new ChildEntityDuplicationException(lotId, lot, Id, this);
@@ -36,9 +36,12 @@ public class Reference : IAggregateRoot
         Lots.Add(lot);
     }
 
-    public void UpdateLot(string lotId, int lotSize, DateTime timestamp)
+    public void UpdateLot(string lotId, int lotSize, ELotStatus? lotStatus, DateTime? endTime)
     {
-        var lot = Lots.OrderByDescending(x => x.Timestamp).First();
-        lot.Update(lotId, lotSize, timestamp);
+        var lot = Lots.FirstOrDefault(x => x.LotStatus == ELotStatus.Working);
+        if (lot is not null)
+        {
+            lot.Update(lotId, lotSize, lotStatus, endTime);
+        }
     }
 }

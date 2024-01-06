@@ -14,7 +14,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ProductViewModel>> GetProducts([FromQuery]ProductsQuery query)
+    public async Task<IEnumerable<ProductViewModel>> GetProducts([FromQuery] ProductsQuery query)
     {
         return await _mediator.Send(query);
     }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WembleyScada.Api.Application.Queries.DeviceReferences;
+using WembleyScada.Domain.AggregateModels.ReferenceAggregate;
 using WembleyScada.Infrastructure;
 
 namespace WembleyScada.Api.Application.Queries.References;
@@ -36,13 +37,13 @@ public class ParametersQueryHandler : IRequestHandler<ParametersQuery, IEnumerab
         var references = await queryable.ToListAsync();
 
         references = references.GroupBy(x => x.DeviceType)
-            .Select(group => group.OrderByDescending(x => x.Lots.Any() ? x.Lots.Max(x => x.Timestamp) : DateTime.MinValue).First())
+            .Select(group => group.OrderByDescending(x => x.Lots.Any() ? x.Lots.Max(x => x.StartTime) : DateTime.MinValue).First())
             .ToList();
 
         var viewModels = new List<ParameterViewModel>();
         foreach (var reference in references)
         {
-            var lot = reference.Lots.OrderByDescending(x => x.Timestamp).First();
+            var lot = reference.Lots.Find(x => x.LotStatus == ELotStatus.Working);
 
             var deviceReferences = await _context.DeviceReferences
                 .Include(x => x.Device)
@@ -55,8 +56,8 @@ public class ParametersQueryHandler : IRequestHandler<ParametersQuery, IEnumerab
                 reference.DeviceType,
                 reference.Product.ProductName,
                 reference.RefName,
-                lot.LotId,
-                lot.LotSize,
+                lot?.LotId,
+                lot?.LotSize,
                 _mapper.Map<List<DeviceReferenceViewModel>>(deviceReferences));
 
             viewModels.Add(viewModel);

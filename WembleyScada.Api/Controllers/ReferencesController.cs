@@ -16,7 +16,7 @@ public class ReferencesController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IEnumerable<ReferenceViewModel>> GetReferences([FromQuery]ReferencesQuery query)
+    public async Task<IEnumerable<ReferenceViewModel>> GetReferences([FromQuery] ReferencesQuery query)
     {
         return await _mediator.Send(query);
     }
@@ -43,7 +43,7 @@ public class ReferencesController : ControllerBase
     [Route("{refName}")]
     public async Task<IActionResult> UpdateLot([FromRoute] string refName, [FromBody]UpdateLotViewModel lot)
     {
-        var command = new UpdateLotCommand(refName, lot.LotId, lot.LotSize);
+        var command = new UpdateLotCommand(refName, lot.LotId, lot.LotSize, lot.LotStatus, lot.EndTime);
         try
         {
             var response = await _mediator.Send(command);

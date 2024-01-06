@@ -15,7 +15,7 @@ public class ErrorInformationsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<ErrorStatusViewModel>> GetErrorStatuses([FromQuery]ErrorStatusesQuery query)
+    public async Task<IEnumerable<ErrorStatusViewModel>> GetErrorStatuses([FromQuery] ErrorStatusesQuery query)
     {
         return await _mediator.Send(query);
     }

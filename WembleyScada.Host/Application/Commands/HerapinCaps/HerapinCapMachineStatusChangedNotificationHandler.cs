@@ -1,8 +1,11 @@
 ﻿using WembleyScada.Domain.AggregateModels.DeviceAggregate;
+using WembleyScada.Domain.AggregateModels.ErrorInformationAggregate;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Host.Application.Buffers;
 using WembleyScada.Host.Application.Services;
+using WembleyScada.Infrastructure.Communication;
+using Buffer = WembleyScada.Api.Application.Workers.Buffer;
 
 namespace WembleyScada.Host.Application.Commands.HerapinCaps;
 
@@ -10,17 +13,23 @@ public class HerapinCapMachineStatusChangedNotificationHandler : INotificationHa
 {
     private readonly StatusTimeBuffers _statusTimeBuffers;
     private readonly MetricMessagePublisher _metricMessagePublisher;
+    private readonly ManagedMqttClient _mqttClient;
     private readonly IShiftReportRepository _shiftReportRepository;
     private readonly IMachineStatusRepository _machineStatusRepository;
     private readonly IDeviceRepository _deviceRepository;
+    private readonly IErrorInformationRepository _errorInformationRepository;  
+    private readonly Buffer _buffer;
 
-    public HerapinCapMachineStatusChangedNotificationHandler(StatusTimeBuffers statusTimeBuffers, MetricMessagePublisher metricMessagePublisher, IShiftReportRepository shiftReportRepository, IMachineStatusRepository machineStatusRepository, IDeviceRepository deviceRepository)
+    public HerapinCapMachineStatusChangedNotificationHandler(StatusTimeBuffers statusTimeBuffers, MetricMessagePublisher metricMessagePublisher, ManagedMqttClient mqttClient, IShiftReportRepository shiftReportRepository, IMachineStatusRepository machineStatusRepository, IDeviceRepository deviceRepository, IErrorInformationRepository errorInformationRepository, Buffer buffer)
     {
         _statusTimeBuffers = statusTimeBuffers;
         _metricMessagePublisher = metricMessagePublisher;
+        _mqttClient = mqttClient;
         _shiftReportRepository = shiftReportRepository;
         _machineStatusRepository = machineStatusRepository;
         _deviceRepository = deviceRepository;
+        _errorInformationRepository = errorInformationRepository;
+        _buffer = buffer;
     }
 
     public async Task Handle(HerapinCapMachineStatusChangedNotification notification, CancellationToken cancellationToken)
@@ -46,9 +55,9 @@ public class HerapinCapMachineStatusChangedNotificationHandler : INotificationHa
             HandleErrorStatus(notification, latestStatus);
         }
 
-        if (notification.MachineStatus == EMachineStatus.WifiDisconnted)
+        if (notification.MachineStatus == EMachineStatus.Off)
         {
-            await HandleWifiDisconnectedStatus(notification, latestStatus);
+            await HandleOffStatus(notification);
         }
 
         await UpdateMachineStatus(notification, device, latestStatus, cancellationToken);
@@ -83,12 +92,33 @@ public class HerapinCapMachineStatusChangedNotificationHandler : INotificationHa
         }
     }
 
-    private async Task HandleWifiDisconnectedStatus(HerapinCapMachineStatusChangedNotification notification, MachineStatus? latestStatus)
+    private async Task HandleOffStatus(HerapinCapMachineStatusChangedNotification notification)
     {
-        if (latestStatus is not null && latestStatus.Status == EMachineStatus.Off)
+        var tagChangedNotifications = _buffer.GetTagByDevice(notification.DeviceId);
+        var tagIds = tagChangedNotifications.Select(x => x.TagId).ToList();
+        
+        foreach (var tagId in tagIds)
         {
-            await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "machineStatus", EMachineStatus.Off, notification.Timestamp);
-            return;
+            await _mqttClient.Publish($"{notification.DeviceType}/{notification.DeviceId}/Metric/{tagId}", string.Empty, true);
+        }
+
+        _buffer.ClearBufferByDevice(notification.DeviceId);
+
+        var errorInformations = await _errorInformationRepository.GetByDeviceAsync(notification.DeviceId);
+        var latestErrorStatues = errorInformations.Select(x =>
+                x.ErrorStatuses.OrderByDescending(x => x.Timestamp)
+                               .FirstOrDefault())
+            .ToList();
+        
+        var errorStatues = latestErrorStatues.Where(x => x.Value == 1).ToList();
+       
+        foreach (var errorStatus in errorStatues)
+        {
+            if (errorStatus is null)
+            {
+                return;
+            }
+            await _metricMessagePublisher.PublishMetricMessage(notification.DeviceType, notification.DeviceId, "endErrorStatus", errorStatus.ErrorInformation.ErrorName, notification.Timestamp);
         }
     }
 

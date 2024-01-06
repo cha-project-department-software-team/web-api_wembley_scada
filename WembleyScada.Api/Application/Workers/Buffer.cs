@@ -21,4 +21,14 @@ public class Buffer
     }
 
     public string GetAllTag() => JsonSerializer.Serialize(tagChangedNotifications);
+
+    public List<TagChangedNotification> GetTagByDevice(string deviceId)
+    {
+        return tagChangedNotifications.Where(n => n.DeviceId == deviceId).ToList();
+    }
+
+    public void ClearBufferByDevice(string deviceId)
+    {
+        tagChangedNotifications.RemoveAll(n => n.DeviceId == deviceId);
+    }
 }

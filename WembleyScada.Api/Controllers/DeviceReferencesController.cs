@@ -16,14 +16,14 @@ public class DeviceReferencesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<DeviceReferenceViewModel>> GetDeviceReferences([FromQuery]DeviceReferencesQuery query)
+    public async Task<IEnumerable<DeviceReferenceViewModel>> GetDeviceReferences([FromQuery] DeviceReferencesQuery query)
     {
         return await _mediator.Send(query);
     }
 
     [HttpPut]
     [Route("{deviceId}/{referenceId}")]
-    public async Task<IActionResult> UpdateMFCs([FromRoute]string deviceId, [FromRoute]int referenceId, [FromBody]List<UpdateMFCViewModel> mfcs)
+    public async Task<IActionResult> UpdateMFCs([FromRoute]string deviceId, [FromRoute] int referenceId, [FromBody] List<UpdateMFCViewModel> mfcs)
     {
         var command = new UpdateDeviceReferenceCommand(referenceId, deviceId, mfcs);
         try

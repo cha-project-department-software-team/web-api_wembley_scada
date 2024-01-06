@@ -82,6 +82,6 @@ public class ShiftReport : IAggregateRoot
 
     public void SetP(double p)
     { 
-        P = p; 
+        P = p > 1 ? 1 : p; 
     }
 }
