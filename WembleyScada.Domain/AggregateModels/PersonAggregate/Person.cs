@@ -28,7 +28,7 @@ public class Person : IAggregateRoot
         WorkRecords.Add(personWorkRecord);
     }
 
-    public void DeleteWorkingRecord()
+    public void DeleteWorkingRecords()
     {
         WorkRecords.RemoveAll(x => x.WorkStatus == EWorkStatus.Working);
     }

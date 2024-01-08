@@ -24,7 +24,7 @@ public class UpdatePersonWorkRecordCommandHandler : IRequestHandler<UpdatePerson
         foreach (var oldPersonId in oldPersonIds)
         { 
             var person = await _personRepository.GetAsync(oldPersonId) ?? throw new ResourceNotFoundException(nameof(Person), oldPersonId);
-            person.DeleteWorkingRecord();
+            person.DeleteWorkingRecords();
         }
 
         foreach (var newPersonId in request.PersonIds)

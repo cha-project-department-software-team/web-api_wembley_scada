@@ -73,9 +73,26 @@ public class PersonsController : ControllerBase
 
     [HttpPut]
     [Route("PersonWorkRecords/{deviceId}")]
-    public async Task<IActionResult> UpdatePersonWorkRecord([FromRoute] string deviceId, [FromBody] UpdatePersonWorkRecordViewModel personWorkRecord)
+    public async Task<IActionResult> UpdatePersonWorkRecords([FromRoute] string deviceId, [FromBody] UpdatePersonWorkRecordViewModel personWorkRecord)
     {
         var command = new UpdatePersonWorkRecordCommand(deviceId, personWorkRecord.PersonIds);
+        try
+        {
+            var response = await _mediator.Send(command);
+            return Ok(response);
+        }
+        catch (ResourceNotFoundException ex)
+        {
+            var errorMessage = new ErrorMessage(ex);
+            return NotFound(errorMessage);
+        }
+    }
+
+    [HttpDelete]
+    [Route("PersonWorkRecords/{deviceId}")]
+    public async Task<IActionResult> DeleteWorkRecords([FromRoute] string deviceId, [FromBody] DeletePersonWorkRecordViewModel personWorkRecord)
+    {
+        var command = new DeletePersonWorkRecordCommand(deviceId, personWorkRecord.PersonIds);
         try
         {
             var response = await _mediator.Send(command);

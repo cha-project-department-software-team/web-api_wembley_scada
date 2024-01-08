@@ -22,8 +22,14 @@ public class Device: IAggregateRoot
     }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    public void UpdateWorkRecords(List<PersonWorkRecord> workRecords)
+    public void DeleteWorkRecord(string personId)
     {
-        WorkRecords = workRecords;
+        var workRecords = WorkRecords.Where(x => x.WorkStatus == EWorkStatus.Working).ToList();
+        var workRecord = workRecords.Find(x => x.PersonId == personId);
+        if (workRecord is null)
+        {
+            throw new Exception($"Do not have Person with Id {personId} is working on this Device {DeviceId}");
+        }
+        WorkRecords.Remove(workRecord);
     }
 }

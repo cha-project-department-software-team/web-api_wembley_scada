@@ -47,7 +47,7 @@ public class Reference : IAggregateRoot
 
     public void UpdateLotStatus(ELotStatus lotStatus, DateTime endTime)
     {
-        var lot = Lots.FirstOrDefault(x => x.LotStatus == ELotStatus.Working);
+        var lot = Lots.Find(x => x.LotStatus == ELotStatus.Working);
         if (lot is null)
         {
             throw new Exception($"All Lots is completed in this RefName: {RefName}");
