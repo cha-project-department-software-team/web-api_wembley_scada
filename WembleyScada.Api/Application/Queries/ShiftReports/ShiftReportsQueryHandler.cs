@@ -26,6 +26,10 @@ public class ShiftReportsQueryHandler : IRequestHandler<ShiftReportsQuery, IEnum
             .ThenByDescending(x => x.ShiftNumber)
             .AsNoTracking();
 
+        queryable = queryable
+            .Skip((request.PageIndex - 1) * request.PageSize)
+            .Take(request.PageSize);
+
         var shiftReports = await queryable.ToListAsync();
         return _mapper.Map<IEnumerable<ShiftReportViewModel>>(shiftReports);
     }

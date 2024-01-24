@@ -29,8 +29,6 @@ public class ScadaHost : BackgroundService
         _mqttClient.MessageReceived += OnMqttClientMessageReceivedAsync;
         await _mqttClient.ConnectAsync();
 
-        await _mqttClient.Subscribe("IMM/+/Metric");
-        await _mqttClient.Subscribe("IMM/+/Metric/+");
         await _mqttClient.Subscribe("HCM/+/Metric");
         await _mqttClient.Subscribe("HCM/+/Metric/+");
     }
@@ -45,6 +43,7 @@ public class ScadaHost : BackgroundService
         }
 
         var topicSegments = topic.Split('/');
+        var deviceType = topicSegments[0];
         var deviceId = topicSegments[1];
 
         var metrics = JsonConvert.DeserializeObject<List<MetricMessage>>(payloadMessage);
@@ -54,8 +53,8 @@ public class ScadaHost : BackgroundService
         }
         foreach (var metric in metrics)
         {
-            var notification = new TagChangedNotification(deviceId, metric.Name, metric.Value, metric.Timestamp);
-            _buffer.Update(notification);
+            var notification = new TagChangedNotification(deviceType, deviceId, metric.Name, metric.Value, metric.Timestamp);
+            await _buffer.Update(notification);
             string json = JsonConvert.SerializeObject(notification);
             await _hubContext.Clients.All.SendAsync("TagChanged", json);
         }

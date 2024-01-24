@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Infrastructure;
 
 namespace WembleyScada.Api.Application.Queries.ShiftReports;
@@ -34,6 +33,9 @@ public class ShiftReportDetailsQueryHandler : IRequestHandler<ShiftReportDetails
         }
 
         var shiftReports = await queryable.ToListAsync();
+        shiftReports.ForEach(x =>
+            x.Shots = x.Shots.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToList());
+        
         return _mapper.Map<IEnumerable<ShiftReportDetailViewModel>>(shiftReports);
     }
 }

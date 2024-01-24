@@ -11,7 +11,6 @@ using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
 using WembleyScada.Host.Application.Buffers;
 using WembleyScada.Domain.AggregateModels.ErrorInformationAggregate;
-using Buffer = WembleyScada.Api.Application.Workers.Buffer;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((builder, services) =>
@@ -41,7 +40,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<MetricMessagePublisher>();
         services.AddSingleton<ExecutionTimeBuffers>();
         services.AddSingleton<StatusTimeBuffers>();
-        services.AddSingleton<Buffer>();
 
         services.AddHostedService<UpdateShiftReportWorker>();
     })

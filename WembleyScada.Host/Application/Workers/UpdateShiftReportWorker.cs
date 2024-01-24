@@ -28,8 +28,6 @@ public class UpdateShiftReportWorker : BackgroundService
         _mqttClient.MessageReceived += OnMqttClientMessageReceivedAsync;
         await _mqttClient.ConnectAsync();
 
-        await _mqttClient.Subscribe("IMM/+/Metric");
-        await _mqttClient.Subscribe("IMM/+/Metric/+");
         await _mqttClient.Subscribe("HCM/+/Metric");
         await _mqttClient.Subscribe("HCM/+/Metric/+");
     }

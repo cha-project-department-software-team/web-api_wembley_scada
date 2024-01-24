@@ -1,4 +1,5 @@
 ﻿using WembleyScada.Domain.AggregateModels.DeviceAggregate;
+using WembleyScada.Domain.AggregateModels.MachineStatusAggregate;
 using WembleyScada.Domain.AggregateModels.ShiftReportAggregate;
 using WembleyScada.Host.Application.Buffers;
 using WembleyScada.Host.Application.Services;
@@ -8,13 +9,15 @@ namespace WembleyScada.Host.Application.Commands.HerapinCaps;
 public class HerapinCapProductCountNotificationHandler : INotificationHandler<HerapinCapProductCountNotification>
 {
     private readonly StatusTimeBuffers _statusTimeBuffers;
+    private readonly IMachineStatusRepository _machineStatusRepository;
     private readonly IShiftReportRepository _shiftReportRepository;
     private readonly IDeviceRepository _deviceRepository;
     private readonly MetricMessagePublisher _metricMessagePublisher;
 
-    public HerapinCapProductCountNotificationHandler(StatusTimeBuffers statusTimeBuffers, IShiftReportRepository shiftReportRepository, IDeviceRepository deviceRepository, MetricMessagePublisher metricMessagePublisher)
+    public HerapinCapProductCountNotificationHandler(StatusTimeBuffers statusTimeBuffers, IMachineStatusRepository machineStatusRepository, IShiftReportRepository shiftReportRepository, IDeviceRepository deviceRepository, MetricMessagePublisher metricMessagePublisher)
     {
         _statusTimeBuffers = statusTimeBuffers;
+        _machineStatusRepository = machineStatusRepository;
         _shiftReportRepository = shiftReportRepository;
         _deviceRepository = deviceRepository;
         _metricMessagePublisher = metricMessagePublisher;
@@ -22,6 +25,12 @@ public class HerapinCapProductCountNotificationHandler : INotificationHandler<He
 
     public async Task Handle(HerapinCapProductCountNotification notification, CancellationToken cancellationToken)
     {
+        var latestStatus = await _machineStatusRepository.GetLatestAsync(notification.DeviceId);
+        if (latestStatus is null || latestStatus.Status != EMachineStatus.Run)
+        {
+            return;
+        }
+
         var device = await _deviceRepository.GetAsync(notification.DeviceId);
         if (device is null)
         {
