@@ -33,4 +33,11 @@ public class ShiftReportsController : ControllerBase
     {
         return await _mediator.Send(query);
     }
+
+    [HttpGet]
+    [Route("ShortenDetails")]
+    public async Task<IEnumerable<ShiftReportDetailViewModel>> GetShiftReportShortenDetails([FromQuery] ShiftReportShortenDetailsQuery query)
+    {
+        return await _mediator.Send(query);
+    }
 }

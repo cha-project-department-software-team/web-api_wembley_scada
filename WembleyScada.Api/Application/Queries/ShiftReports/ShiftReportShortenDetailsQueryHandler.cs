@@ -4,18 +4,18 @@ using WembleyScada.Infrastructure;
 
 namespace WembleyScada.Api.Application.Queries.ShiftReports;
 
-public class ShiftReportDetailsQueryHandler : IRequestHandler<ShiftReportDetailsQuery, IEnumerable<ShiftReportDetailViewModel>>
+public class ShiftReportShortenDetailsQueryHandler : IRequestHandler<ShiftReportShortenDetailsQuery, IEnumerable<ShiftReportDetailViewModel>>
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public ShiftReportDetailsQueryHandler(ApplicationDbContext context, IMapper mapper)
+    public ShiftReportShortenDetailsQueryHandler(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<ShiftReportDetailViewModel>> Handle(ShiftReportDetailsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ShiftReportDetailViewModel>> Handle(ShiftReportShortenDetailsQuery request, CancellationToken cancellationToken)
     {
         var queryable = _context.ShiftReports
             .Include(x => x.Shots)
@@ -34,9 +34,9 @@ public class ShiftReportDetailsQueryHandler : IRequestHandler<ShiftReportDetails
         }
 
         var shiftReports = await queryable.ToListAsync();
-        shiftReports.ForEach(x =>
-            x.Shots = x.Shots.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToList());
-        
+        shiftReports.ForEach(x
+            => x.Shots = x.Shots.Where((x, index) => (index + 1) % request.Interval == 1).ToList());
+
         return _mapper.Map<IEnumerable<ShiftReportDetailViewModel>>(shiftReports);
     }
 }
