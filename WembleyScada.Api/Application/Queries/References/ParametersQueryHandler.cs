@@ -50,8 +50,8 @@ public class ParametersQueryHandler : IRequestHandler<ParametersQuery, IEnumerab
 
             var viewModel = new ParameterViewModel(
                 reference.DeviceType,
-                reference.Product.ProductName,
-                reference.RefName,
+                lot is null ? string.Empty : reference.Product.ProductName,
+                lot is null ? string.Empty : reference.RefName,
                 lot is null ? string.Empty : lot.LotId,
                 lot is null ? 0 : lot.LotSize,
                 await MapToDeviceInfoViewModel(reference));

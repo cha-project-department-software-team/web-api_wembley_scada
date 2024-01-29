@@ -1,4 +1,5 @@
-﻿using WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate;
+﻿using WembleyScada.Domain.AggregateModels.DeviceAggregate;
+using WembleyScada.Domain.AggregateModels.DeviceReferenceAggregate;
 
 namespace WembleyScada.Infrastructure.Repositories;
 
@@ -15,5 +16,14 @@ public class DeviceReferenceRepository : BaseRepository, IDeviceReferenceReposit
             .Include(x => x.Device)
             .Include(x => x.MFCs)
             .FirstOrDefaultAsync(x => x.ReferenceId == referenceId && x.DeviceId == deviceId);
+    }
+
+    public async Task<DeviceReference?> GetByRefIdAsync(int referenceId)
+    {
+        return await _context.DeviceReferences
+            .Include(x => x.Reference)
+            .Include(x => x.Device)
+            .Include(x => x.MFCs)
+            .FirstOrDefaultAsync(x => x.ReferenceId == referenceId);
     }
 }

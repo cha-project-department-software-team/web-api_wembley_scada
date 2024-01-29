@@ -51,7 +51,7 @@ public class HerapinCapProductCountNotificationHandler : INotificationHandler<He
         var elapsedTime = notification.Timestamp - startTime;
 
         double A = runningTime / elapsedTime;
-        double P = (2.75 * (notification.ProductCount / 4)) / (runningTime.TotalMilliseconds / 1000);
+        double P = (2.5 * (notification.ProductCount / 4)) / (runningTime.TotalMilliseconds / 1000);
         
         shiftReport.SetA(A);
         shiftReport.SetP(P);

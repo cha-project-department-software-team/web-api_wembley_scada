@@ -14,4 +14,12 @@ public class ReferenceRepository : BaseRepository, IReferenceRepository
             .Include(x => x.Lots)
             .FirstOrDefaultAsync(x => x.RefName == refName);
     }
+
+    public async Task<IEnumerable<Reference>> GetByTypeAsync(string deviceType)
+    {
+        return await _context.References
+            .Include(x => x.Lots)
+            .Where(x => x.DeviceType == deviceType)
+            .ToListAsync();
+    }
 }

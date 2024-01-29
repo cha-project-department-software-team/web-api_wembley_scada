@@ -34,8 +34,12 @@ public class ShiftReportShortenDetailsQueryHandler : IRequestHandler<ShiftReport
         }
 
         var shiftReports = await queryable.ToListAsync();
-        shiftReports.ForEach(x
-            => x.Shots = x.Shots.Where((x, index) => (index + 1) % request.Interval == 1).ToList());
+
+        if (request.Interval != 1)
+        {
+            shiftReports.ForEach(x
+                => x.Shots = x.Shots.Where((x, index) => (index + 1) % request.Interval == 1).ToList());
+        }
 
         return _mapper.Map<IEnumerable<ShiftReportDetailViewModel>>(shiftReports);
     }

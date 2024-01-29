@@ -40,4 +40,11 @@ public class ShiftReportsController : ControllerBase
     {
         return await _mediator.Send(query);
     }
+
+    [HttpGet]
+    [Route("Latest")]
+    public async Task<IEnumerable<ShotOEEViewModel>> GetShotOEEViews([FromQuery] ShiftReportLatestDetailsQuery query)
+    {
+        return await _mediator.Send(query);
+    }
 }

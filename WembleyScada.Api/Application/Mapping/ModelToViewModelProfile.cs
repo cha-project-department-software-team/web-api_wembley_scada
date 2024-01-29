@@ -35,6 +35,7 @@ public class ModelToViewModelProfile : Profile
         CreateMap<ShiftReport, ShiftReportViewModel>();
         CreateMap<ShiftReport, ShiftReportDetailViewModel>();
         CreateMap<Shot, ShotViewModel>();
+        CreateMap<Shot, ShotOEEViewModel>();
 
         CreateMap<MachineStatus, MachineStatusViewModel>();
 
